@@ -1,3 +1,6 @@
-# isucon-settings
-Setting files for ISUCON
+# isucon-dotfiles
+dotfiles for ISUCON
+
+- zsh
+- vim
 
