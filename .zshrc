@@ -86,9 +86,6 @@ function select-history() {
 zle -N select-history
 bindkey -M viins '^r' select-history
 
-# ALIAS: ls
-alias lla='ls -al'
-
 # ALIAS: ghq
 if type "ghq" > /dev/null 2>&1; then
 	alias gg='ghq get'
@@ -97,5 +94,38 @@ if type "ghq" > /dev/null 2>&1; then
 		alias gls='ghq list | fzf'
 	fi
 fi
+
+# ALIAS: ls
+if type "lsd" > /dev/null 2>&1; then
+	alias ls='lsd -a'
+	alias ll='lsd -al'
+	alias ls-old='/bin/ls -aG'
+else
+	alias ls='/bin/ls --color -a'
+	alias ll='/bin/ls --color -al'
+fi
+
+# FUNCTION: applog
+applog() {
+	if [[ $# != 1 ]]; then
+		echo "usage: $0 [service-name]"
+		return
+	fi
+
+	if type "ccze" > /dev/null 2>&1; then
+		LANG=en_US sudo journalctl -fu $1 | ccze
+	else
+		LANG=en_US sudo journalctl -fu $1
+	fi
+}
+_applog() {
+	_values $( \
+		systemctl list-unit-files --type=service --state=enabled | \
+		grep -Ev '^UNIT|^$|[0-9]+ unit files listed.' | \
+		awk '{print $1}' | \
+		tr '\n' ' ' \
+	)
+}
+compdef _applog applog
 
 source ~/.zplug/repos/b4b4r07/enhancd/init.sh
