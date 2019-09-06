@@ -1,8 +1,9 @@
 #!/bin/bash
 
+GIT_DIR=".dotfiles"
 
-git clone "https://github.com/popunbom/isucon-dotfiles" ~/.dotfiles
+git clone "https://github.com/popunbom/isucon-dotfiles" ${GIT_DIR}
 
-for dotfile in $(find ~/.dotfiles -maxdepth 1 -type f -name ".*" | sed -E "s#$HOME/.dotfiles/(.*)#\1#g"); do
-  ln -sv ~/.dotfiles/${dotfile} ~/${dotfile}
+for FILE_PATH in $(find ${GIT_DIR} -maxdepth 1 -type f -name ".*"); do
+  echo ln -sv "${FILE_PATH}" "${FILE_PATH#.dotfiles/}"
 done
